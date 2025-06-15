@@ -1,10 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const { exec } = require('child_process');
+// ...
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// ✅ 정적 파일 서빙 경로 추가
+app.use('/output', express.static(__dirname));
 
 app.post('/generate', (req, res) => {
   const { text, filename } = req.body;
@@ -18,14 +19,8 @@ app.post('/generate', (req, res) => {
     }
     res.send({
       message: 'Video created',
-      file: safeFilename
+      file: safeFilename,
+      video_url: `https://ntmag.onrender.com/output/${safeFilename}`
     });
   });
 });
-
-app.get('/', (req, res) => {
-  res.send('FFmpeg API is working!');
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
